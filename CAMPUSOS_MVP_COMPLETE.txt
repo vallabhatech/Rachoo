@@ -1,0 +1,537 @@
+CAMPUSOS AI — COMPLETE MVP DOCUMENTATION
+=========================================
+
+Repository: vallabhatech/Rachoo
+Purpose: Hackathon MVP for an agentic campus request-to-resolution platform.
+
+
+1. WHAT WE ARE BUILDING
+-----------------------
+CampusOS AI is an AI-powered campus operations assistant that converts a student's natural-language request into an actionable workflow.
+
+Core idea:
+Student request -> AI understands -> workflow selected -> department routed -> staff action -> student gets resolution/status.
+
+This is intentionally a focused MVP. The goal is to demonstrate meaningful agentic behavior and an end-to-end workflow rather than building a large production campus ERP.
+
+
+2. MVP DEMO WORKFLOW
+--------------------
+Primary workflow: Bonafide Certificate.
+
+Demo student message:
+"I need a bonafide certificate for my internship."
+
+The AI agent determines:
+- Intent: BONAFIDE_CERTIFICATE
+- Department: Academic Administration
+- Priority: NORMAL
+- Purpose: Internship application
+- Next action: CREATE_REQUEST
+
+The application then creates/routes the request.
+
+Admin sees:
+- Request ID #1024
+- Bonafide Certificate
+- Internship application
+- Academic Administration
+- Normal priority
+- Pending Approval
+- AI-generated summary
+
+Admin can:
+- Approve the request
+- Reject the request
+
+On approval:
+- Status changes to Completed
+- The UI reports that the student notification was sent
+
+On rejection:
+- Status changes to Rejected
+
+
+3. WHY THIS IS AGENTIC
+----------------------
+The system is not only a chatbot.
+
+The AI performs a workflow-oriented decision process:
+1. Understand the natural-language request.
+2. Identify the user's intent.
+3. Extract useful context/purpose.
+4. Determine priority.
+5. Select the responsible department.
+6. Select the next workflow action.
+7. Create/routе the request in the application.
+8. Preserve the result as workflow state for the admin/student UI.
+9. Allow a human/admin to approve or reject the action.
+
+This demonstrates AI + context + decision + tool/API execution + state + human approval.
+
+
+4. CURRENT MVP FEATURES
+-----------------------
+STUDENT VIEW
+- Student/Admin role switch for demo purposes.
+- AI Assistant input box.
+- Natural-language request submission.
+- AI analysis result.
+- Request status card.
+- AI execution/workflow log.
+- Department, priority, intent, purpose and next action display.
+
+ADMIN VIEW
+- Pending Requests section.
+- AI summary.
+- Request metadata.
+- Approve button.
+- Reject button.
+- Workflow health metrics.
+- Visible completion/rejection state.
+
+AI API
+- POST /api/agent
+- Accepts: { "text": "student request" }
+- Returns structured workflow information.
+- Uses Google Gemini when GEMINI_API_KEY is configured.
+- Uses a deterministic fallback when the key is absent so the demo still works.
+
+
+5. SUPPORTED AI WORKFLOWS IN THE AGENT PROMPT
+----------------------------------------------
+The current API prompt recognizes these workflow types:
+- BONAFIDE_CERTIFICATE
+- ID_CARD_REPLACEMENT
+- LEAVE_REQUEST
+
+Supported departments:
+- Academic Administration
+- Student Services
+- Academic Department
+
+Supported priorities:
+- LOW
+- NORMAL
+- HIGH
+
+The UI's main polished demo is the Bonafide Certificate workflow because it is simple, understandable and easy to demonstrate in a short hackathon presentation.
+
+
+6. PROJECT STRUCTURE
+---------------------
+package.json
+  Dependencies, scripts and project metadata.
+
+tsconfig.json
+  TypeScript configuration.
+
+next-env.d.ts
+  Next.js TypeScript declarations.
+
+next.config.js
+  Next.js configuration.
+
+tailwind.config.ts
+  Tailwind CSS configuration.
+
+postcss.config.js
+  PostCSS configuration.
+
+.env.example
+  Example environment configuration.
+
+README.md
+  Short project setup and overview.
+
+app/layout.tsx
+  Global application layout and metadata.
+
+app/globals.css
+  Global styling and CampusOS visual design.
+
+app/page.tsx
+  Main student/admin demo UI and client-side workflow state.
+
+app/api/agent/route.ts
+  AI agent API route. Handles Gemini analysis and deterministic fallback behavior.
+
+CAMPUSOS_MVP_COMPLETE.txt
+  This complete reference document.
+
+
+7. TECHNOLOGY STACK
+--------------------
+Frontend:
+- Next.js 14
+- React 18
+- TypeScript
+- Tailwind CSS
+- Lucide React
+
+AI:
+- Google Gemini through @google/generative-ai
+- Gemini model configured in the API route: gemini-2.0-flash
+
+Backend:
+- Next.js App Router API route
+- TypeScript
+
+Deployment target:
+- Vercel
+
+Data/state for MVP:
+- Client-side/in-memory demo state
+- No database is required for the one-hour MVP
+
+
+8. WHAT MUST BE INSTALLED
+--------------------------
+Required:
+- Node.js 18.17 or newer
+- npm
+
+The user's existing Node.js 22.x setup is suitable.
+
+NOT REQUIRED FOR THIS MVP:
+- Python
+- FastAPI
+- PostgreSQL
+- MongoDB
+- Firebase
+- Docker
+- Kubernetes
+- Redis
+- Separate backend server
+
+
+9. LOCAL SETUP
+---------------
+Clone the repository:
+
+git clone https://github.com/vallabhatech/Rachoo.git
+cd Rachoo
+
+Install dependencies:
+
+npm install
+
+Start development server:
+
+npm run dev
+
+Open:
+
+http://localhost:3000
+
+Production build test:
+
+npm run build
+
+Production start:
+
+npm start
+
+
+10. GEMINI SETUP
+----------------
+Gemini is optional because the project includes a deterministic fallback.
+
+Create a file named .env.local in the project root:
+
+GEMINI_API_KEY=your_google_gemini_api_key
+
+Then restart the development server.
+
+IMPORTANT:
+- Never commit .env.local.
+- Never put the Gemini API key directly into frontend/client code.
+- Keep secrets in environment variables.
+- For Vercel, add GEMINI_API_KEY under the project's Environment Variables.
+
+If Gemini is unavailable, the API route falls back to the demo Bonafide Certificate classification, so the presentation can still run.
+
+
+11. EXACT DEMO SCRIPT
+---------------------
+STEP 1 — Open the application.
+Say:
+"This is CampusOS AI, an agentic campus operations assistant. Instead of navigating multiple portals, a student can simply describe what they need."
+
+STEP 2 — Stay on Student mode.
+Enter:
+"I need a bonafide certificate for my internship."
+
+STEP 3 — Submit.
+Point out the AI execution log.
+Say:
+"The agent understands the request, identifies the workflow, extracts the purpose, determines priority, selects the department and creates the request."
+
+STEP 4 — Show the generated request.
+Point out:
+- Bonafide Certificate
+- Academic Administration
+- Normal priority
+- Internship application
+- Pending Approval
+
+STEP 5 — Switch to Admin.
+Say:
+"The request is now routed to the responsible administrative team."
+
+STEP 6 — Show AI summary.
+Say:
+"The staff member does not need to interpret the original message manually. The agent has already structured the request."
+
+STEP 7 — Click Approve.
+Say:
+"A human remains in control. The admin approves the workflow."
+
+STEP 8 — Show Completed.
+Say:
+"The request is completed and the student notification is triggered. This closes the request-to-resolution loop."
+
+
+12. BEST 60-SECOND PITCH
+------------------------
+"CampusOS AI turns campus services from form-filling into conversations. A student simply tells the system what they need. Our AI agent understands the request, identifies the workflow, determines priority, routes it to the correct department and keeps the request moving until resolution. In our MVP, a student can request a bonafide certificate for an internship, the agent structures and routes that request, and an administrator can approve it from the operations dashboard. The important part is that this is not just a chatbot — the agent actually drives a workflow while keeping a human in the approval loop."
+
+
+13. ARCHITECTURE
+---------------
+
+                   STUDENT
+                      |
+                      v
+              Natural Language
+                      |
+                      v
+              +---------------+
+              |  AI AGENT API |
+              |    Gemini     |
+              +---------------+
+                      |
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+       Intent      Priority    Department
+          |           |           |
+          +-----------+-----------+
+                      |
+                      v
+               Workflow Action
+                      |
+                      v
+               Request Created
+                      |
+                      v
+                ADMIN DASHBOARD
+                      |
+                +-----+-----+
+                |           |
+             Approve      Reject
+                |           |
+                v           v
+            Completed    Rejected
+                |
+                v
+          Student Notification
+
+
+14. API CONTRACT
+----------------
+Endpoint:
+POST /api/agent
+
+Request:
+{
+  "text": "I need a bonafide certificate for my internship."
+}
+
+Expected response shape:
+{
+  "intent": "BONAFIDE_CERTIFICATE",
+  "department": "Academic Administration",
+  "priority": "NORMAL",
+  "purpose": "Internship application",
+  "next_action": "CREATE_REQUEST"
+}
+
+The frontend consumes this structured response and displays the AI execution/workflow state.
+
+
+15. DEMO FALLBACK
+-----------------
+The fallback exists specifically to protect the hackathon demo from an AI API/network/key problem.
+
+If GEMINI_API_KEY is not configured or the Gemini response cannot be parsed, the API returns the deterministic Bonafide Certificate result.
+
+Therefore:
+- UI demo still works.
+- Agent flow still appears.
+- No API key is required for basic local demonstration.
+- Gemini can be enabled when available.
+
+
+16. CURRENT MVP LIMITATIONS
+---------------------------
+This is a hackathon MVP, not a production campus ERP.
+
+Current limitations:
+- No real authentication.
+- No real student database.
+- No persistent request database.
+- Browser/in-memory state is used for the demo.
+- No real certificate PDF generation.
+- No real email/SMS/WhatsApp notification provider.
+- Admin role switch is a demonstration mechanism.
+- Only a small number of workflows are represented.
+- No production-grade authorization model.
+- No audit database.
+
+These limitations are intentional to keep the MVP buildable and demoable within a very short time.
+
+
+17. WHAT TO ADD IF THERE IS MORE TIME
+--------------------------------------
+Priority order:
+
+PHASE 2 — STRONGER DEMO
+1. Add 3–5 campus workflows.
+2. Add persistent database storage.
+3. Add student/admin authentication.
+4. Add department-based authorization.
+5. Add actual request history.
+6. Add document upload.
+7. Generate a real bonafide certificate PDF.
+8. Add email notification.
+9. Add student tracking timeline.
+
+Suggested workflows:
+- Bonafide Certificate
+- ID Card Replacement
+- Leave Request
+- Certificate/Document Request
+- Academic Support Request
+
+PHASE 3 — PRODUCTION HARDENING
+1. Audit trail for every agent action.
+2. Prompt injection protection.
+3. Input validation and rate limiting.
+4. Structured tool/function calling.
+5. Real workflow engine/queue.
+6. Observability and error logging.
+7. Role-based access control.
+8. Database-backed state.
+9. Secure secrets management.
+10. Human approval gates for sensitive actions.
+
+
+18. WHAT NOT TO BUILD FOR THE SHORT MVP
+---------------------------------------
+Do not spend the one-hour MVP window on:
+- Kubernetes clusters
+- Microservices
+- Complex RAG pipelines
+- Vector databases
+- Custom authentication systems
+- Payment systems
+- Fifteen different workflows
+- Native mobile apps
+- Complex analytics
+- Large admin ERP modules
+
+The winning demo should show one workflow working end-to-end rather than many unfinished features.
+
+
+19. VERCEL DEPLOYMENT
+---------------------
+Recommended deployment:
+- Import vallabhatech/Rachoo into Vercel.
+- Framework: Next.js.
+- Build command: npm run build.
+- Install command: npm install.
+- No custom server is required.
+- Add GEMINI_API_KEY as a Vercel Environment Variable if using Gemini.
+
+After deployment, test the complete flow:
+1. Open deployed site.
+2. Submit the bonafide request.
+3. Confirm AI result.
+4. Confirm request appears.
+5. Switch Admin.
+6. Approve.
+7. Confirm Completed state.
+
+
+20. HACKATHON JUDGE CHECKLIST
+-----------------------------
+Before presenting, verify:
+[ ] Site loads.
+[ ] Student mode works.
+[ ] Natural-language input works.
+[ ] AI response appears.
+[ ] Intent is visible.
+[ ] Department is visible.
+[ ] Priority is visible.
+[ ] Purpose is visible.
+[ ] Next action is visible.
+[ ] Request is visible.
+[ ] Admin mode works.
+[ ] Approve works.
+[ ] Reject works.
+[ ] Completed state is visible.
+[ ] No API key is accidentally exposed.
+[ ] Vercel environment variable is configured if Gemini is used.
+[ ] Demo request is prepared before presenting.
+
+
+21. BACKUP DEMO PLAN
+--------------------
+If Gemini fails during the presentation:
+- Continue using the built-in fallback.
+- Submit the same Bonafide Certificate request.
+- Explain that the production version connects the same workflow interface to the live Gemini agent.
+
+Never let a live external API dependency become the single point of failure for the presentation.
+
+
+22. FINAL MVP DEFINITION
+------------------------
+The MVP is complete when this sentence is true:
+
+"A student can describe a campus service request in natural language, an AI agent can turn it into structured workflow data and route it to the appropriate department, and a staff member can approve or reject it until the student reaches a visible resolution state."
+
+That is the core CampusOS AI demonstration.
+
+
+23. REPOSITORY QUICK REFERENCE
+------------------------------
+GitHub repository:
+https://github.com/vallabhatech/Rachoo
+
+Local development:
+npm install
+npm run dev
+
+Production build:
+npm run build
+npm start
+
+Optional AI environment variable:
+GEMINI_API_KEY
+
+Main UI:
+app/page.tsx
+
+Agent API:
+app/api/agent/route.ts
+
+Short setup:
+README.md
+
+Complete documentation:
+CAMPUSOS_MVP_COMPLETE.txt
+
+
+END OF DOCUMENT
